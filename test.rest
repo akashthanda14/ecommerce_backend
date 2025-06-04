@@ -1,0 +1,161 @@
+
+### Root Check
+GET http://localhost:13000/
+
+# ============================
+# 🔐 AUTH ROUTES
+# ============================
+
+### Signup User
+POST http://localhost:13000/api/auth/signup
+Content-Type: application/json
+
+{
+  "name": "Simrandeep Thanda",
+  "email": "simrandeep@example.com",
+  "password": "mypassword123"
+}
+
+# ============================
+# 👕 PRODUCT ROUTES (Clothing)
+# ============================
+
+### Get All Products
+GET http://localhost:13000/api/products
+
+###
+
+### Get Product by ID
+GET http://localhost:13000/api/products/1
+
+###
+
+### Create New Product - T-Shirt
+POST http://localhost:13000/api/products
+Content-Type: application/json
+
+{
+  "name": "Men's Cotton T-Shirt",
+  "description": "Premium 100% cotton regular fit crew neck tee - White",
+  "price": 999.00
+}
+
+###
+
+### Create New Product - Women's Dress
+POST http://localhost:13000/api/products
+Content-Type: application/json
+
+{
+  "name": "Floral Summer Dress",
+  "description": "Lightweight flowy dress with a floral print and flared hem - Size S to XL",
+  "price": 1799.00
+}
+
+###
+
+### Create New Product - Denim Jeans
+POST http://localhost:13000/api/products
+Content-Type: application/json
+
+{
+  "name": "Slim Fit Denim Jeans",
+  "description": "Dark blue stretch denim jeans with a slim fit - 30 to 38 waist",
+  "price": 2499.00
+}
+
+###
+
+### Update Product
+PUT http://localhost:13000/api/products/1
+Content-Type: application/json
+
+{
+  "name": "Men's Cotton T-Shirt - Updated",
+  "description": "Updated fit and material, now softer",
+  "price": 1099.00
+}
+
+###
+
+### Delete Product
+DELETE http://localhost:13000/api/products/1
+
+# ============================
+# 🛒 CART ROUTES
+# ============================
+
+### Get User Cart
+GET http://localhost:13000/api/cart
+
+###
+
+### Add Product to Cart (T-Shirt)
+POST http://localhost:13000/api/cart
+Content-Type: application/json
+
+{
+  "product_id": 2,
+  "quantity": 2
+}
+
+###
+
+### Add Product to Cart (Dress)
+POST http://localhost:13000/api/cart
+Content-Type: application/json
+
+{
+  "product_id": 3,
+  "quantity": 1
+}
+
+###
+
+### Update Cart Item Quantity
+PUT http://localhost:13000/api/cart/1
+Content-Type: application/json
+
+{
+  "quantity": 3
+}
+
+###
+
+### Remove Item from Cart
+DELETE http://localhost:13000/api/cart/1
+
+# ============================
+# 📦 ORDER ROUTES
+# ============================
+
+### Get All Orders (Current User)
+GET http://localhost:13000/api/orders
+Accept: application/json
+
+###
+
+### Get Order by ID
+GET http://localhost:13000/api/orders/1
+Accept: application/json
+
+###
+
+### Create a New Order (Manual Total)
+POST http://localhost:13000/api/orders
+Content-Type: application/json
+
+{
+  "total_price": 5297.00,
+  "status": "pending"
+}
+
+###
+
+### Update Order Status (Admin)
+PUT http://localhost:13000/api/orders/1
+Content-Type: application/json
+
+{
+  "status": "shipped"
+}
