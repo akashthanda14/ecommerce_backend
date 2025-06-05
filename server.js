@@ -1,6 +1,6 @@
 require('dotenv').config();
-const db = require('./db.js');
 const express = require('express');
+const db = require('./db.js');
 const port = process.env.PORT || 3000;
 
 const productRoutes = require('./routes/productRoutes');
@@ -13,11 +13,12 @@ const { apiLimiter, authLimiter } = require('./middlewares/rateLimit.js');
 
 const app = express();
 
+// Middleware setup
 app.use(helmet);
-app.use('/api', apiLimiter); // Apply general rate limiter
+app.use('/api', apiLimiter);
 app.use(express.json());
 
-
+// Route setup
 app.use('/api/auth', authLimiter, authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/cart', cartRoutes);
@@ -27,24 +28,31 @@ app.get('/', (req, res) => {
   res.send('Welcome to the E-commerce API!');
 });
 
+// Migration logic
 const migrate = async () => {
-  // Create users table if missing (without role column)
+  // Ensure `users` table exists (without name/role)
   await db.query(`
     CREATE TABLE IF NOT EXISTS users (
       id SERIAL PRIMARY KEY,
-      name VARCHAR(100),             -- Added name column here
       email VARCHAR(100) UNIQUE NOT NULL,
       password TEXT NOT NULL,
       created_at TIMESTAMP DEFAULT NOW()
     );
   `);
 
-  // Add role column if missing
+  // Add `name` column if it doesn't exist
+  await db.query(`
+    ALTER TABLE users
+    ADD COLUMN IF NOT EXISTS name VARCHAR(100);
+  `);
+
+  // Add `role` column if it doesn't exist
   await db.query(`
     ALTER TABLE users
     ADD COLUMN IF NOT EXISTS role VARCHAR(10) DEFAULT 'user';
   `);
 
+  // Other tables
   await db.query(`
     CREATE TABLE IF NOT EXISTS products (
       id SERIAL PRIMARY KEY,
@@ -86,9 +94,14 @@ const migrate = async () => {
   `);
 };
 
+// Start server
 (async () => {
-  await migrate();
-  app.listen(port, '0.0.0.0', () => {
-    console.log("Server started on port", port);
-  });
+  try {
+    await migrate();
+    app.listen(port, '0.0.0.0', () => {
+      console.log(`🚀 Server started on port ${port}`);
+    });
+  } catch (err) {
+    console.error('❌ Migration or server error:', err.message);
+  }
 })();
