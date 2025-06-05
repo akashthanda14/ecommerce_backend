@@ -17,7 +17,8 @@ app.use(helmet);
 app.use('/api', apiLimiter); // Apply general rate limiter
 app.use(express.json());
 
-app.use('/api/auth/login', authLimiter); // Apply stricter limiter to login
+// Fixed login route to /api/auth/signin (not /login)
+app.use('/api/auth/signin', authLimiter);
 
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
@@ -29,6 +30,7 @@ const migrate = async () => {
   await db.query(`
     CREATE TABLE IF NOT EXISTS users (
       id SERIAL PRIMARY KEY,
+      name VARCHAR(100),             -- Added name column here
       email VARCHAR(100) UNIQUE NOT NULL,
       password TEXT NOT NULL,
       created_at TIMESTAMP DEFAULT NOW()
@@ -82,9 +84,9 @@ const migrate = async () => {
   `);
 };
 
-
-migrate();
-
-app.listen(port, '0.0.0.0', () => {
-  console.log("Server started on port", port);
-});
+(async () => {
+  await migrate();
+  app.listen(port, '0.0.0.0', () => {
+    console.log("Server started on port", port);
+  });
+})();
