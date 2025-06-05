@@ -159,3 +159,95 @@ Content-Type: application/json
 {
   "status": "shipped"
 }
+
+
+### Test: SignUp - Missing name
+POST http://localhost:13000/api/auth/signup
+Content-Type: application/json
+
+{
+  "email": "test1@example.com",
+  "password": "password123"
+}
+
+###
+
+### Test: SignUp - Invalid email
+POST http://localhost:13000/api/auth/signup
+Content-Type: application/json
+
+{
+  "name": "Test User",
+  "email": "invalid-email",
+  "password": "password123"
+}
+
+###
+
+### Test: SignUp - Password too short
+POST http://localhost:13000/api/auth/signup
+Content-Type: application/json
+
+{
+  "name": "Test User",
+  "email": "test2@example.com",
+  "password": "123"
+}
+
+###
+
+### Test: SignUp - Invalid role
+POST http://localhost:13000/api/auth/signup
+Content-Type: application/json
+
+{
+  "name": "Test User",
+  "email": "test3@example.com",
+  "password": "password123",
+  "role": "manager"
+}
+
+###
+
+### Test: SignUp - Valid data
+POST http://localhost:13000/api/auth/signup
+Content-Type: application/json
+
+{
+  "name": "Valid User",
+  "email": "valid@example.com",
+  "password": "secure123",
+  "role": "user"
+}
+
+###
+
+### Test: SignIn - Missing password
+POST http://localhost:13000/api/auth/signin
+Content-Type: application/json
+
+{
+  "email": "valid@example.com"
+}
+
+###
+
+### Test: SignIn - Invalid email format
+POST http://localhost:13000/api/auth/signin
+Content-Type: application/json
+
+{
+  "email": "invalid-email",
+  "password": "secure123"
+}
+
+###
+
+### Test: SignIn - Valid login
+POST http://localhost:13000/api/auth/signin
+Content-Type: application/json
+
+{
+  "email": "valid@example.com",
+  "password": "secure123"
+}

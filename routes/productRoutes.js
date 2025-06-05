@@ -1,11 +1,15 @@
 const express = require('express');
 const router = express.Router();
 const ctrl = require('../controllers/productController');
+const authMiddleware = require('../middlewares/authMiddleware');
+const adminMiddleware = require('../middlewares/adminMiddleware');
 
 router.get('/', ctrl.getAll);
 router.get('/:id', ctrl.getById);
-router.post('/', ctrl.create); // Assume auth middleware checks admin
-router.put('/:id', ctrl.update); // Assume auth middleware checks admin
-router.delete('/:id', ctrl.remove); // Assume auth middleware checks admin
+
+// 🔐 Protected admin routes
+router.post('/', authMiddleware, adminMiddleware, ctrl.create);
+router.put('/:id', authMiddleware, adminMiddleware, ctrl.update);
+router.delete('/:id', authMiddleware, adminMiddleware, ctrl.remove);
 
 module.exports = router;

@@ -2,34 +2,45 @@ require('dotenv').config();
 const db = require('./db.js');
 const express = require('express');
 const port = process.env.PORT || 3000;
+
 const productRoutes = require('./routes/productRoutes');
 const cartRoutes = require('./routes/cartRoutes.js');
 const orderRoutes = require('./routes/orderRoutes');
-
-
 const authRoutes = require('./routes/authRoutes.js');
 
+const helmet = require('./middlewares/helmet.js');
+const { apiLimiter, authLimiter } = require('./middlewares/rateLimit.js');
 
 const app = express();
 
+app.use(helmet);
+app.use('/api', apiLimiter); // Apply general rate limiter
 app.use(express.json());
 
-// Example middleware to inject user object (simulate auth)
-app.use((req, res, next) => {
-  req.user = { id: 1 }; // mock user
-  next();
-});
-
-
+app.use('/api/auth/login', authLimiter); // Apply stricter limiter to login
 
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/orders', orderRoutes);
 
-
 const migrate = async () => {
-  // 1. Products table
+  // Create users table if missing (without role column)
+  await db.query(`
+    CREATE TABLE IF NOT EXISTS users (
+      id SERIAL PRIMARY KEY,
+      email VARCHAR(100) UNIQUE NOT NULL,
+      password TEXT NOT NULL,
+      created_at TIMESTAMP DEFAULT NOW()
+    );
+  `);
+
+  // Add role column if missing
+  await db.query(`
+    ALTER TABLE users
+    ADD COLUMN IF NOT EXISTS role VARCHAR(10) DEFAULT 'user';
+  `);
+
   await db.query(`
     CREATE TABLE IF NOT EXISTS products (
       id SERIAL PRIMARY KEY,
@@ -40,7 +51,6 @@ const migrate = async () => {
     );
   `);
 
-  // 2. Orders table — must come before order_items
   await db.query(`
     CREATE TABLE IF NOT EXISTS orders (
       id SERIAL PRIMARY KEY,
@@ -51,7 +61,6 @@ const migrate = async () => {
     );
   `);
 
-  // 3. Order items table (after orders & products)
   await db.query(`
     CREATE TABLE IF NOT EXISTS order_items (
       id SERIAL PRIMARY KEY,
@@ -62,7 +71,6 @@ const migrate = async () => {
     );
   `);
 
-  // 4. Cart table
   await db.query(`
     CREATE TABLE IF NOT EXISTS cart (
       id SERIAL PRIMARY KEY,
@@ -77,6 +85,6 @@ const migrate = async () => {
 
 migrate();
 
-app.listen(port,'0.0.0.0', () => {
+app.listen(port, '0.0.0.0', () => {
   console.log("Server started on port", port);
 });
