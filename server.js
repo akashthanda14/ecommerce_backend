@@ -1,13 +1,16 @@
 require('dotenv').config();
 const express = require('express');
+const bcrypt = require('bcrypt');
 const db = require('./db.js');
 const port = process.env.PORT || 3000;
 
+// Routes
 const productRoutes = require('./routes/productRoutes');
 const cartRoutes = require('./routes/cartRoutes.js');
 const orderRoutes = require('./routes/orderRoutes');
 const authRoutes = require('./routes/authRoutes.js');
 
+// Middlewares
 const helmet = require('./middlewares/helmet.js');
 const { apiLimiter, authLimiter } = require('./middlewares/rateLimit.js');
 
@@ -15,11 +18,11 @@ const app = express();
 
 // Middleware setup
 app.use(helmet);
-app.use('/api', apiLimiter);
 app.use(express.json());
+app.use('/api', apiLimiter); // general rate limit
 
-// Route setup
-app.use('/api/auth', authLimiter, authRoutes);
+// Routes
+app.use('/api/auth', authLimiter, authRoutes); // auth limiter applied
 app.use('/api/products', productRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/orders', orderRoutes);
@@ -28,9 +31,8 @@ app.get('/', (req, res) => {
   res.send('Welcome to the E-commerce API!');
 });
 
-// Migration logic
+// 🧱 Migration logic
 const migrate = async () => {
-  // Ensure `users` table exists (without name/role)
   await db.query(`
     CREATE TABLE IF NOT EXISTS users (
       id SERIAL PRIMARY KEY,
@@ -40,19 +42,16 @@ const migrate = async () => {
     );
   `);
 
-  // Add `name` column if it doesn't exist
   await db.query(`
     ALTER TABLE users
     ADD COLUMN IF NOT EXISTS name VARCHAR(100);
   `);
 
-  // Add `role` column if it doesn't exist
   await db.query(`
     ALTER TABLE users
     ADD COLUMN IF NOT EXISTS role VARCHAR(10) DEFAULT 'user';
   `);
 
-  // Other tables
   await db.query(`
     CREATE TABLE IF NOT EXISTS products (
       id SERIAL PRIMARY KEY,
@@ -94,14 +93,38 @@ const migrate = async () => {
   `);
 };
 
-// Start server
+// 🛡️ Create default admin user if not exists
+const createDefaultAdmin = async () => {
+  const email = 'admin@example.com';
+  const name = 'Admin';
+  const password = 'admin123';
+  const role = 'admin';
+
+  const existing = await db.query('SELECT * FROM users WHERE email = $1', [email]);
+  if (existing.rows.length > 0) {
+    console.log('✅ Admin already exists');
+    return;
+  }
+
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  await db.query(
+    'INSERT INTO users (name, email, password, role) VALUES ($1, $2, $3, $4)',
+    [name, email, hashedPassword, role]
+  );
+
+  console.log('✅ Default admin created: admin@example.com / admin123');
+};
+
+// 🚀 Start Server
 (async () => {
   try {
     await migrate();
+    await createDefaultAdmin();
     app.listen(port, '0.0.0.0', () => {
-      console.log(`🚀 Server started on port ${port}`);
+      console.log(`🚀 Server running on port ${port}`);
     });
   } catch (err) {
-    console.error('❌ Migration or server error:', err.message);
+    console.error('❌ Startup error:', err.message);
   }
 })();
