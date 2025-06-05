@@ -25,6 +25,10 @@ app.use('/api/products', productRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/orders', orderRoutes);
 
+app.get('/', (req, res) => {
+  res.send('Welcome to the E-commerce API!');
+});
+
 const migrate = async () => {
   // Create users table if missing (without role column)
   await db.query(`
