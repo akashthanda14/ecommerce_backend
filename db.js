@@ -1,9 +1,9 @@
 const { Pool } = require('pg');
-require('dotenv').config();
+// require('dotenv').config();
 
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL || `postgresql://${process.env.PG_USER || 'user123'}:${process.env.PG_PASSWORD || 'password123'}@${process.env.PG_HOST || 'db'}:${process.env.PG_PORT || 5432}/${process.env.PG_DATABASE || 'db123'}`,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
-});
+  connectionString: "postgresql://postgres:xbsCuGGvNymdZFHzyBIXsGBWyaWBCjfM@postgres.railway.internal:5432/railway"
+    // connectionString: process.env.DATABASE_URL, // Uncomment this line if you want to use the DATABASE_URL from .env file    
+  });
 
 module.exports = pool;
