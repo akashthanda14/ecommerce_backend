@@ -17,10 +17,8 @@ app.use(helmet);
 app.use('/api', apiLimiter); // Apply general rate limiter
 app.use(express.json());
 
-// Fixed login route to /api/auth/signin (not /login)
-app.use('/api/auth/signin', authLimiter);
 
-app.use('/api/auth', authRoutes);
+app.use('/api/auth', authLimiter, authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/orders', orderRoutes);
