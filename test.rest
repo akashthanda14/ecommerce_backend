@@ -1,13 +1,13 @@
 
 ### Root Check
-GET http://localhost:13000/
+GET http://localhost:3000/
 
 # ============================
 # 🔐 AUTH ROUTES
 # ============================
 
 ### Signup User
-POST http://localhost:13000/api/auth/signup
+POST http://localhost:3000/api/auth/signup
 Content-Type: application/json
 
 {
@@ -21,17 +21,17 @@ Content-Type: application/json
 # ============================
 
 ### Get All Products
-GET http://localhost:13000/api/products
+GET http://localhost:3000/api/products
 
 ###
 
 ### Get Product by ID
-GET http://localhost:13000/api/products/1
+GET http://localhost:3000/api/products/1
 
 ###
 
 ### Create New Product - T-Shirt
-POST http://localhost:13000/api/products
+POST http://localhost:3000/api/products
 Content-Type: application/json
 
 {
@@ -43,7 +43,7 @@ Content-Type: application/json
 ###
 
 ### Create New Product - Women's Dress
-POST http://localhost:13000/api/products
+POST http://localhost:3000/api/products
 Content-Type: application/json
 
 {
@@ -55,7 +55,7 @@ Content-Type: application/json
 ###
 
 ### Create New Product - Denim Jeans
-POST http://localhost:13000/api/products
+POST http://localhost:3000/api/products
 Content-Type: application/json
 
 {
@@ -67,7 +67,7 @@ Content-Type: application/json
 ###
 
 ### Update Product
-PUT http://localhost:13000/api/products/1
+PUT http://localhost:3000/api/products/1
 Content-Type: application/json
 
 {
@@ -79,19 +79,19 @@ Content-Type: application/json
 ###
 
 ### Delete Product
-DELETE http://localhost:13000/api/products/1
+DELETE http://localhost:3000/api/products/1
 
 # ============================
 # 🛒 CART ROUTES
 # ============================
 
 ### Get User Cart
-GET http://localhost:13000/api/cart
+GET http://localhost:3000/api/cart
 
 ###
 
 ### Add Product to Cart (T-Shirt)
-POST http://localhost:13000/api/cart
+POST http://localhost:3000/api/cart
 Content-Type: application/json
 
 {
@@ -102,7 +102,7 @@ Content-Type: application/json
 ###
 
 ### Add Product to Cart (Dress)
-POST http://localhost:13000/api/cart
+POST http://localhost:3000/api/cart
 Content-Type: application/json
 
 {
@@ -113,7 +113,7 @@ Content-Type: application/json
 ###
 
 ### Update Cart Item Quantity
-PUT http://localhost:13000/api/cart/1
+PUT http://localhost:3000/api/cart/1
 Content-Type: application/json
 
 {
@@ -123,26 +123,26 @@ Content-Type: application/json
 ###
 
 ### Remove Item from Cart
-DELETE http://localhost:13000/api/cart/1
+DELETE http://localhost:3000/api/cart/1
 
 # ============================
 # 📦 ORDER ROUTES
 # ============================
 
 ### Get All Orders (Current User)
-GET http://localhost:13000/api/orders
+GET http://localhost:3000/api/orders
 Accept: application/json
 
 ###
 
 ### Get Order by ID
-GET http://localhost:13000/api/orders/1
+GET http://localhost:3000/api/orders/1
 Accept: application/json
 
 ###
 
 ### Create a New Order (Manual Total)
-POST http://localhost:13000/api/orders
+POST http://localhost:3000/api/orders
 Content-Type: application/json
 
 {
@@ -153,7 +153,7 @@ Content-Type: application/json
 ###
 
 ### Update Order Status (Admin)
-PUT http://localhost:13000/api/orders/1
+PUT http://localhost:3000/api/orders/1
 Content-Type: application/json
 
 {
@@ -162,7 +162,7 @@ Content-Type: application/json
 
 
 ### Test: SignUp - Missing name
-POST http://localhost:13000/api/auth/signup
+POST http://localhost:3000/api/auth/signup
 Content-Type: application/json
 
 {
@@ -173,7 +173,7 @@ Content-Type: application/json
 ###
 
 ### Test: SignUp - Invalid email
-POST http://localhost:13000/api/auth/signup
+POST http://localhost:3000/api/auth/signup
 Content-Type: application/json
 
 {
@@ -185,7 +185,7 @@ Content-Type: application/json
 ###
 
 ### Test: SignUp - Password too short
-POST http://localhost:13000/api/auth/signup
+POST http://localhost:3000/api/auth/signup
 Content-Type: application/json
 
 {
@@ -197,7 +197,7 @@ Content-Type: application/json
 ###
 
 ### Test: SignUp - Invalid role
-POST http://localhost:13000/api/auth/signup
+POST http://localhost:3000/api/auth/signup
 Content-Type: application/json
 
 {
@@ -210,7 +210,7 @@ Content-Type: application/json
 ###
 
 ### Test: SignUp - Valid data
-POST http://localhost:13000/api/auth/signup
+POST http://localhost:3000/api/auth/signup
 Content-Type: application/json
 
 {
@@ -223,7 +223,7 @@ Content-Type: application/json
 ###
 
 ### Test: SignIn - Missing password
-POST http://localhost:13000/api/auth/signin
+POST http://localhost:3000/api/auth/signin
 Content-Type: application/json
 
 {
@@ -233,7 +233,7 @@ Content-Type: application/json
 ###
 
 ### Test: SignIn - Invalid email format
-POST http://localhost:13000/api/auth/signin
+POST http://localhost:3000/api/auth/signin
 Content-Type: application/json
 
 {
@@ -244,7 +244,7 @@ Content-Type: application/json
 ###
 
 ### Test: SignIn - Valid login
-POST http://localhost:13000/api/auth/signin
+POST http://localhost:3000/api/auth/signin
 Content-Type: application/json
 
 {

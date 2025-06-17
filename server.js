@@ -16,6 +16,19 @@ const { apiLimiter, authLimiter } = require('./middlewares/rateLimit.js');
 
 const app = express();
 
+const path = require('path');
+const fs = require('fs');
+
+// Ensure uploads folder exists
+const uploadsPath = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadsPath)) {
+  fs.mkdirSync(uploadsPath);
+}
+
+// Serve static image files
+app.use('/uploads', express.static(uploadsPath));
+
+
 // Middleware setup
 app.use(helmet);
 app.use(express.json());
@@ -52,15 +65,20 @@ const migrate = async () => {
     ADD COLUMN IF NOT EXISTS role VARCHAR(10) DEFAULT 'user';
   `);
 
-  await db.query(`
-    CREATE TABLE IF NOT EXISTS products (
-      id SERIAL PRIMARY KEY,
-      name VARCHAR(100) NOT NULL,
-      description TEXT,
-      price NUMERIC(10, 2) NOT NULL,
-      created_at TIMESTAMP DEFAULT NOW()
-    );
-  `);
+await db.query(`
+  CREATE TABLE IF NOT EXISTS products (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    description TEXT,
+    price NUMERIC(10, 2) NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW()
+  );
+`);
+
+await db.query(`
+  ALTER TABLE products
+  ADD COLUMN IF NOT EXISTS image_url TEXT;
+`);
 
   await db.query(`
     CREATE TABLE IF NOT EXISTS orders (
